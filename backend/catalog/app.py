@@ -18,3 +18,11 @@ def search(topic):
     books = conn.execute('SELECT id, title FROM books WHERE topic = ?', (topic,)).fetchall()
     conn.close()
     return jsonify([dict(book) for book in books])
+
+# Response to return book details by item_id to the frontend request.
+@app.route('/info/<int:item_id>', methods=['GET'])
+def info(item_id):
+    conn = get_db()
+    book = conn.execute('SELECT * FROM books WHERE id = ?', (item_id,)).fetchone()
+    conn.close()
+    return jsonify(dict(book)) if book else ('Not Found', 404)

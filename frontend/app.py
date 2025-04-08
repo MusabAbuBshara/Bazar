@@ -16,3 +16,12 @@ def search(topic):
         return jsonify({'results': response.json()}), 200
     except requests.exceptions.RequestException:
         return jsonify({'error': 'Catalog service unavailable'}), 503
+
+# Endpoint to request to get book details by item_id from catalog server.
+@app.route('/info/<int:item_id>', methods=['GET'])
+def info(item_id):
+    try:
+        response = requests.get(f'{CATALOG_URL}/info/{item_id}', timeout=3)
+        return jsonify(response.json()), response.status_code
+    except requests.exceptions.RequestException:
+        return jsonify({'error': 'Catalog service unavailable'}), 503
