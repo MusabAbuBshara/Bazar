@@ -33,20 +33,30 @@ def update(item_id):
     data = request.get_json()
     if not data or 'field' not in data or 'amount' not in data:
         return jsonify({'success': False, 'error': 'Invalid request'}), 400
-    
+
     field = data['field']
     amount = data['amount']
-    
+
     if field not in ['quantity', 'price']:
         return jsonify({'success': False, 'error': 'Invalid field'}), 400
 
     conn = get_db()
     cursor = conn.cursor()
     try:
-        cursor.execute(
-            f'UPDATE books SET {field} = {field} + ? WHERE id = ?',
-            (amount, item_id)
-        )
+        # Prevent negative stock for quantity updates
+        if field == 'quantity':
+            # Ensure quantity + amount >= 0
+            cursor.execute(
+                'UPDATE books SET quantity = quantity + ? WHERE id = ? AND quantity + ? >= 0',
+                (amount, item_id, amount)
+            )
+        else:
+            # For price updates, no constraint
+            cursor.execute(
+                f'UPDATE books SET {field} = {field} + ? WHERE id = ?',
+                (amount, item_id)
+            )
+
         success = cursor.rowcount > 0
         conn.commit()
         return jsonify({'success': success})
