@@ -11,13 +11,13 @@ services:
       - order
 
   catalog:
-    build: ./catalog
+    build: ./backend/catalog
     ports: ["5001:5001"]
     volumes: ["./backend/catalog/data:/data"]
     command: ["sh", "-c", "python init_db.py && python app.py"]
 
   order:
-    build: ./order
+    build: ./backend/catalog
     ports: ["5002:5002"]
     volumes: ["./backend/order/data:/data"]
     environment:
