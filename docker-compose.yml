@@ -17,7 +17,7 @@ services:
     command: ["sh", "-c", "python init_db.py && python app.py"]
 
   order:
-    build: ./backend/catalog
+    build: ./backend/order
     ports: ["5002:5002"]
     volumes: ["./backend/order/data:/data"]
     environment:
