@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    ports: ["5000:5000"]
+    environment:
+      CATALOG_SERVER: "http://catalog:5001"
+      ORDER_SERVER: "http://order:5002"
+    depends_on:
+      - catalog
+      - order
+
+  catalog:
+    build: ./catalog
+    ports: ["5001:5001"]
+    volumes: ["./backend/catalog/data:/data"]
+    command: ["sh", "-c", "python init_db.py && python app.py"]
+
+  order:
+    build: ./order
+    ports: ["5002:5002"]
+    volumes: ["./backend/order/data:/data"]
+    environment:
+      CATALOG_SERVER: "http://catalog:5001"
+    command: ["sh", "-c", "python init_db.py && python app.py"]
