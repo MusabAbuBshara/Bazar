@@ -26,3 +26,6 @@ def info(item_id):
     book = conn.execute('SELECT * FROM books WHERE id = ?', (item_id,)).fetchone()
     conn.close()
     return jsonify(dict(book)) if book else ('Not Found', 404)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001)

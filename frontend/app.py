@@ -25,3 +25,15 @@ def info(item_id):
         return jsonify(response.json()), response.status_code
     except requests.exceptions.RequestException:
         return jsonify({'error': 'Catalog service unavailable'}), 503
+
+# Endpoint to request to purchase a book from order server.
+@app.route('/purchase/<int:item_id>', methods=['POST'])
+def purchase(item_id):
+    try:
+        response = requests.post(f'{ORDER_URL}/purchase/{item_id}', timeout=5)
+        return jsonify(response.json()), response.status_code
+    except requests.exceptions.RequestException:
+        return jsonify({'error': 'Order service unavailable'}), 503
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
